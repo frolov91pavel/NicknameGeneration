@@ -15,10 +15,11 @@ public class Main {
             texts[i] = generateText("abc", 3 + random.nextInt(3));
         }
 
-        ExecutorService executorServiceThree = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         AtomicInteger three = new AtomicInteger(0);
         IntStream.range(0, texts.length)
-                .forEach(i -> executorServiceThree.submit(() -> {
+                .forEach(i -> executorService.submit(() -> {
                     if (texts[i].length() == 3 || texts[i].equals("aaa") || texts[i].equals("bbb") || texts[i].equals("ccc")) {
                         if (isPalindrome(texts[i]) || sortedText(texts[i])) {
                             three.addAndGet(1);
@@ -26,14 +27,9 @@ public class Main {
                     }
                 }));
 
-        executorServiceThree.awaitTermination(3, TimeUnit.SECONDS);
-        System.out.println("Красивых слов с длиной 3: " + three.get() + " шт.");
-        executorServiceThree.shutdown();
-
-        ExecutorService executorServiceFour = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         AtomicInteger four = new AtomicInteger(0);
         IntStream.range(0, texts.length)
-                .forEach(i -> executorServiceFour.submit(() -> {
+                .forEach(i -> executorService.submit(() -> {
                     if (texts[i].length() == 4 || texts[i].equals("aaaa") || texts[i].equals("bbbb") || texts[i].equals("cccc")) {
                         if (isPalindrome(texts[i]) || sortedText(texts[i])) {
                             four.addAndGet(1);
@@ -41,14 +37,9 @@ public class Main {
                     }
                 }));
 
-        executorServiceFour.awaitTermination(3, TimeUnit.SECONDS);
-        System.out.println("Красивых слов с длиной 4: " + four.get() + " шт.");
-        executorServiceFour.shutdown();
-
-        ExecutorService executorServiceFive = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         AtomicInteger five = new AtomicInteger(0);
         IntStream.range(0, texts.length)
-                .forEach(i -> executorServiceFive.submit(() -> {
+                .forEach(i -> executorService.submit(() -> {
                     if (texts[i].length() == 5 || texts[i].equals("aaaaa") || texts[i].equals("bbbbb") || texts[i].equals("ccccc")) {
                         if (isPalindrome(texts[i]) || sortedText(texts[i])) {
                             five.addAndGet(1);
@@ -56,9 +47,13 @@ public class Main {
                     }
                 }));
 
-        executorServiceFive.awaitTermination(3, TimeUnit.SECONDS);
+        executorService.awaitTermination(3, TimeUnit.SECONDS);
+
+        System.out.println("Красивых слов с длиной 3: " + three.get() + " шт.");
+        System.out.println("Красивых слов с длиной 4: " + four.get() + " шт.");
         System.out.println("Красивых слов с длиной 5: " + five.get() + " шт.");
-        executorServiceFive.shutdown();
+
+        executorService.shutdown();
 
     }
 
